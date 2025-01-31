@@ -5,8 +5,24 @@ import { Folder, File, Upload, ChevronRight, MoreVertical } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 
+type Folder = {
+  id: string;
+  name: string;
+  type: "folder";
+  children: File[];
+};
+
+type File = {
+  id: string;
+  name: string;
+  type: "file";
+  url: string;
+  size: string;
+  modified: string;
+};
+
 // Mock data structure
-const initialData = [
+const initialData: (Folder | File)[] = [
   {
     id: "1",
     name: "Documents",
@@ -69,18 +85,19 @@ export default function Home() {
     { id: "root", name: "My Drive" },
   ]);
 
-  const handleFolderClick = (folder) => {
+  const handleFolderClick = (folder: Folder) => {
+    if (folder.type !== "folder") return;
     setCurrentFolder(folder.children);
     setBreadcrumbs([...breadcrumbs, { id: folder.id, name: folder.name }]);
   };
 
-  const handleBreadcrumbClick = (index) => {
-    if (index === 0) {
+  const handleBreadcrumbClick = (breadcrumbIndex: number) => {
+    if (breadcrumbIndex === 0) {
       setCurrentFolder(initialData);
       setBreadcrumbs([{ id: "root", name: "My Drive" }]);
     } else {
       // This is a simplified version. In a real app, you'd need to traverse the folder structure.
-      setBreadcrumbs(breadcrumbs.slice(0, index + 1));
+      setBreadcrumbs(breadcrumbs.slice(0, breadcrumbIndex + 1));
     }
   };
 
@@ -154,10 +171,10 @@ export default function Home() {
                   </td>
                   <td className="px-4 py-2 text-gray-400">Me</td>
                   <td className="px-4 py-2 text-gray-400">
-                    {item.modified || "--"}
+                    {item.type === "file" ? item.modified : "--"}
                   </td>
                   <td className="px-4 py-2 text-gray-400">
-                    {item.size || "--"}
+                    {item.type === "file" ? item.size : "--"}
                   </td>
                   <td className="px-4 py-2 text-right">
                     <Button
