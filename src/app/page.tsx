@@ -9,7 +9,7 @@ type Folder = {
   id: string;
   name: string;
   type: "folder";
-  children: File[];
+  children: (Folder | File)[];
 };
 
 type File = {
@@ -43,6 +43,21 @@ const initialData: (Folder | File)[] = [
         url: "#",
         size: "1.5 MB",
         modified: "May 14, 2023",
+      },
+      {
+        id: "8",
+        name: "Subfolder",
+        type: "folder",
+        children: [
+          {
+            id: "9",
+            name: "Subfile.docx",
+            type: "file",
+            url: "#",
+            size: "1.2 MB",
+            modified: "May 16, 2023",
+          },
+        ],
       },
     ],
   },
